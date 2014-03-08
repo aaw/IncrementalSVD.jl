@@ -19,32 +19,22 @@ function train(rating_set::RatingSet,
                regularizer=0.02)
     user_features = [0.1 for r=1:length(rating_set.user_to_index), c=1:max_rank]
     item_features = [0.1 for r=1:length(rating_set.item_to_index), c=1:max_rank]
-    residuals = [Residual(rating.value, 0.0, 0.0) for rating in rating_set.training_set]
     num_ratings = length(rating_set.training_set)
-    p = Progress(max_rank, 1, "Computing truncated rank $(max_rank) SVD ")
-    for rank=1:max_rank
-        errors = [0.0, Inf, Inf]
-        for i=1:max_epochs
+    residuals = [convert(Float32, 0.0) for r=1:num_ratings]
+    p = Progress(max_epochs, 1, "Computing truncated rank $(max_rank) SVD ")
+    for i=1:max_epochs
+        for r=1:num_ratings
+            residuals[r] = rating_set.training_set[r].value
+        end
+        for rank=1:max_rank
             for j=1:num_ratings
-                rating, residual = rating_set.training_set[j], residuals[j]
+                rating = rating_set.training_set[j]
                 item_feature = item_features[rating.item, rank]
                 user_feature = user_features[rating.user, rank]
-                residual.curr_error = residual.value - user_feature * item_feature
-                error_diff = residual.prev_error - residual.curr_error
-                errors[1] += error_diff * error_diff
-                residual.prev_error = residual.curr_error
-                item_features[rating.item, rank] += learning_rate * (residual.curr_error * user_feature - regularizer * item_feature)
-                user_features[rating.user, rank] += learning_rate * (residual.curr_error * item_feature - regularizer * user_feature)
+                residual = residuals[j] -= user_feature * item_feature
+                item_features[rating.item, rank] += learning_rate * (residual * user_feature - regularizer * item_feature)
+                user_features[rating.user, rank] += learning_rate * (residual * item_feature - regularizer * user_feature)
             end
-            # distance decreases, then increases, then decreases. we want to catch it on second decrease
-            if i > min_epochs && errors[1] < errors[2] && errors[2] > errors[3]
-                break
-            end
-            errors[1], errors[2], errors[3] = 0.0, errors[1], errors[2]
-        end
-        for residual in residuals
-            residual.value = residual.curr_error
-            residual.prev_error = 0.0
         end
         next!(p)
     end

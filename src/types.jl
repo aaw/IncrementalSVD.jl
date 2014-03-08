@@ -7,13 +7,6 @@ type Rating
     value::Float32
 end
 
-# An internal type used only by the train function for caching between epochs.
-type Residual
-    value::Float32
-    curr_error::Float32
-    prev_error::Float32
-end
-
 # A set of ratings.
 type RatingSet
     # The set of ratings that the model should be trained on.
