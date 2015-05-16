@@ -7,7 +7,7 @@
 # The large dataset has 10 million ratings from 72,000 users over 10,000 movies.
 # Both datasets have ratings in the range 1.0-5.0.
 
-function load_movielens_dataset(zipfile_name, archive_dir)
+function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
     temp_dir = tempdir()
     download_path = joinpath(temp_dir, zipfile_name)
     if !isfile(download_path)
@@ -57,15 +57,14 @@ function load_movielens_dataset(zipfile_name, archive_dir)
             next!(progress)
         end
     end
-    training_set, test_set = split_ratings(ratings, 0.10)
+    training_set, test_set = split_ratings(ratings, split_ratio)
     RatingSet(training_set, test_set, user_to_index, item_to_index)
 end
 
-function load_small_movielens_dataset()
-    load_movielens_dataset("ml-1m.zip", "ml-1m")
+function load_small_movielens_dataset(split_ratio=0.10)
+    load_movielens_dataset("ml-1m.zip", "ml-1m", split_ratio)
 end
 
-function load_large_movielens_dataset()
-    load_movielens_dataset("ml-10m.zip", "ml-10M100K")
+function load_large_movielens_dataset(split_ratio=0.10)
+    load_movielens_dataset("ml-10m.zip", "ml-10M100K", split_ratio)
 end
-
