@@ -1,12 +1,12 @@
 # Train a truncated SVD model of rank max_rank on the ratings in rating_set.
 # min_epochs and max_epochs control the range of possible number of epochs used
-# in the gradient descent. Since we train features sequentially, overfitting 
-# can happen on early features. If min_epochs < max_epochs, a heuristic for 
-# early exit is used that tends to avoid overfitting, tracking the rate of 
+# in the gradient descent. Since we train features sequentially, overfitting
+# can happen on early features. If min_epochs < max_epochs, a heuristic for
+# early exit is used that tends to avoid overfitting, tracking the rate of
 # change in the error between the model and the known ratings. This rate of
 # change may decrease sharply initially, level off and increase, then finally
 # decrease again. We try to catch it on it's second (final) decrease and
-# terminate training the current feature when we do. learning_rate and 
+# terminate training the current feature when we do. learning_rate and
 # regularizer are the two standard gradient descent parameters that control
 # how fast the descent happens and prevent the descent from over-aggressive
 # training in any direction.
@@ -49,16 +49,16 @@ function train(rating_set::RatingSet,
         next!(p)
     end
 
-    # We end up with just the U and V matrices of the singular value 
+    # We end up with just the U and V matrices of the singular value
     # decomposition, but S can be extracted by normalizing both U and V.
     singular_values = [norm(user_features[:,rank]) * norm(item_features[:,rank]) for rank=1:max_rank]
     for rank=1:max_rank
         user_features[:,rank] /= norm(user_features[:,rank])
         item_features[:,rank] /= norm(item_features[:,rank])
     end
-    return RatingsModel(rating_set.user_to_index, 
-                        rating_set.item_to_index, 
-                        user_features, 
-                        singular_values, 
+    return RatingsModel(rating_set.user_to_index,
+                        rating_set.item_to_index,
+                        user_features,
+                        singular_values,
                         item_features)
 end

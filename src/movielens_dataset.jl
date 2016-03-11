@@ -1,6 +1,6 @@
 # MovieLens dataset (http://http://grouplens.org/datasets/movielens)
 #
-# Please review the README files on the GroupLens site (link above) for the 
+# Please review the README files on the GroupLens site (link above) for the
 # usage licenses and other details.
 #
 # The small dataset has 1 million ratings from 6,000 users over 4,000 movies.
@@ -26,8 +26,8 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
         println("Extracting ratings data...")
         run(`unzip $download_path $(archive_dir)/ratings.dat -d $temp_dir`)
     end
-    original_id_to_movie = Dict{String, String}()
-    movie_count = int(split(readall(`wc -l $(movie_file_name)`), " ")[1])
+    original_id_to_movie = Dict{AbstractString, AbstractString}()
+    movie_count = parse(Int, split(readall(`wc -l $(movie_file_name)`), " ")[1])
     progress = Progress(movie_count, 1, "Loading id-to-movie mapping ")
     open(movie_file_name, "r") do movie_file
         for line in eachline(movie_file)
@@ -37,9 +37,9 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
         end
     end
     ratings = (Rating)[]
-    item_to_index = Dict{String, Int32}()
-    user_to_index = Dict{String, Int32}()
-    ratings_count = int(split(readall(`wc -l $(ratings_file_name)`), " ")[1])
+    item_to_index = Dict{AbstractString, Int32}()
+    user_to_index = Dict{AbstractString, Int32}()
+    ratings_count = parse(Int, split(readall(`wc -l $(ratings_file_name)`), " ")[1])
     progress = Progress(ratings_count, 1, "Loading ratings ")
     open(ratings_file_name, "r") do ratings_file
         for line in eachline(ratings_file)

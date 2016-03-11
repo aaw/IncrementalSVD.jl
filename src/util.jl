@@ -4,7 +4,7 @@
 # in the training set and any item in some rating in the original set of ratings
 # is also in the training set. We preserve this property by iterating through
 # the ratings in random order, only adding an item to the test set only if we
-# haven't already hit target_percentage and we've already seen both the user 
+# haven't already hit target_percentage and we've already seen both the user
 # and the item in some other ratings.
 function split_ratings(ratings::Array{Rating,1},
                        target_percentage=0.10)
@@ -25,7 +25,7 @@ function split_ratings(ratings::Array{Rating,1},
     return training_set, test_set
 end
 
-# RMSE measures the average difference between predicted and actual ratings. 
+# RMSE measures the average difference between predicted and actual ratings.
 # This function measures RMSE on a test subset of the rating set that isn't used
 # for training the model. As an optional final parameter, you can pass in a rank
 # that's less than the model's rank to see if you should have stopped training
@@ -98,7 +98,7 @@ end
 
 # Search for a particular item by a case-insensitive substring.
 function item_search(model::RatingsModel, text)
-    results = (String)[]
+    results = (AbstractString)[]
     r = Regex(".*?$(lowercase(text)).*")
     for item in items(model)
         if ismatch(r, lowercase(item))

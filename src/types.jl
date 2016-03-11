@@ -22,17 +22,17 @@ type RatingSet
     # set, the model will never see these while being trained.
     test_set::Array{Rating, 1}
     # An index between human-readable user names and an interval of integer ids.
-    user_to_index::Dict{String, Int32}
+    user_to_index::Dict{AbstractString, Int32}
     # An index between human-readable item names and an interval of integer ids.
-    item_to_index::Dict{String, Int32}
+    item_to_index::Dict{AbstractString, Int32}
 end
 
 # An SVD model.
 type RatingsModel
     # An index between human-readable user names and an interval of integer ids.
-    user_to_index::Dict{String, Int32}
+    user_to_index::Dict{AbstractString, Int32}
     # An index between human-readable item names and an interval of integer ids.
-    item_to_index::Dict{String, Int32}
+    item_to_index::Dict{AbstractString, Int32}
     # U, S, and V form the SVD decomposition of the original matrix, so
     # U * diagm(S) * V' will yield the model's approximation of the original
     # matrix. U is a (number of users) x (number of features) matrix, S is
