@@ -27,7 +27,7 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
         run(`unzip $download_path $(archive_dir)/ratings.dat -d $temp_dir`)
     end
     original_id_to_movie = Dict{AbstractString, AbstractString}()
-    movie_count = parse(Int, split(readall(`wc -l $(movie_file_name)`), " ")[1])
+    movie_count = countlines(movie_file_name)
     progress = Progress(movie_count, 1, "Loading id-to-movie mapping ")
     open(movie_file_name, "r") do movie_file
         for line in eachline(movie_file)
@@ -39,7 +39,7 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
     ratings = (Rating)[]
     item_to_index = Dict{AbstractString, Int32}()
     user_to_index = Dict{AbstractString, Int32}()
-    ratings_count = parse(Int, split(readall(`wc -l $(ratings_file_name)`), " ")[1])
+    ratings_count = countlines(ratings_file_name)
     progress = Progress(ratings_count, 1, "Loading ratings ")
     open(ratings_file_name, "r") do ratings_file
         for line in eachline(ratings_file)
