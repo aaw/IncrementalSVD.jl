@@ -47,7 +47,7 @@ function load_book_crossing_dataset(;
         run(`unzip $download_path BX-Books.csv -d $temp_dir`)
     end
 
-    books_count = parse(Int, split(readall(`wc -l $(books_file_name)`), " ")[1]) - 1
+    books_count = countlines(books_file_name) - 1
     progress = Progress(books_count, 1, "Loading ISBN-to-book mapping ")
     book_file = open(books_file_name, "r")
     readline(book_file) # skip CSV header
@@ -61,7 +61,7 @@ function load_book_crossing_dataset(;
     end
     close(book_file)
 
-    ratings_count = parse(Int, split(readall(`wc -l $(ratings_file_name)`), " ")[1]) - 1
+    ratings_count = countlines(ratings_file_name) - 1
     progress = Progress(ratings_count, 1, "Collecting counts of books and users for filtering ")
     user_ratings_count = Dict{AbstractString,Int32}()
     book_ratings_count = Dict{AbstractString,Int32}()
@@ -70,6 +70,7 @@ function load_book_crossing_dataset(;
     ratings_file = open(ratings_file_name, "r")
     readline(ratings_file) # skip CSV header
     for line in eachline(ratings_file)
+        try ascii(line) catch; continue end # Some of these lines (~17 out of a million) are non-ASCII garbage.
         delim1 = search(line, "\";\"")
         delim2 = search(line, "\";\"", last(delim1))
         user, isbn, rating = line[2:first(delim1)-1], line[last(delim1)+1:first(delim2)-1], line[last(delim2)+1:end-3]
@@ -95,6 +96,7 @@ function load_book_crossing_dataset(;
     ratings_file = open(ratings_file_name, "r")
     readline(ratings_file) # skip CSV header
     for line in eachline(ratings_file)
+        try ascii(line) catch; continue end # Filter non-ASCII garbage like we did in the loop above.
         delim1 = search(line, "\";\"")
         delim2 = search(line, "\";\"", last(delim1))
         user, isbn, rating = line[2:first(delim1)-1], line[last(delim1)+1:first(delim2)-1], line[last(delim2)+1:end-3]
