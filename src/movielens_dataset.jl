@@ -1,4 +1,4 @@
-# MovieLens dataset (http://http://grouplens.org/datasets/movielens)
+# MovieLens dataset (http://grouplens.org/datasets/movielens)
 #
 # Please review the README files on the GroupLens site (link above) for the
 # usage licenses and other details.
