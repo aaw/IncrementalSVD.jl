@@ -1,14 +1,14 @@
 # A single rating. The user and item are both represented by integer ids. A map
 # between ids and user/item names is stored elsewhere, both in the rating set
 # and the model.
-type Rating
+immutable Rating
     user::Int32
     item::Int32
     value::Float32
 end
 
 # An internal type used only by the train function for caching between epochs.
-type Residual
+immutable Residual
     value::Float32
     curr_error::Float32
     prev_error::Float32
@@ -38,7 +38,7 @@ type RatingsModel
     # matrix. U is a (number of users) x (number of features) matrix, S is
     # a list of (number of features) singular values, and V is a (number of
     # items) x (number of features) matrix.
-    U::Array{Float32,2}
-    S::Array{Float32,1}
-    V::Array{Float32,2}
+    U::AbstractArray{Float32,2}
+    S::AbstractArray{Float32,1}
+    V::AbstractArray{Float32,2}
 end
