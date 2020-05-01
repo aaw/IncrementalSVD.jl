@@ -8,7 +8,7 @@
 # Both datasets have ratings in the range 1.0-5.0.
 
 function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
-    temp_dir = tempdir()
+    temp_dir = "." # tempdir()
     download_path = joinpath(temp_dir, zipfile_name)
     if !isfile(download_path)
         println("Downloading movie ratings data...")
@@ -20,11 +20,7 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
     ratings_file_name = joinpath(temp_dir, archive_dir, "ratings.dat")
     if !isfile(movie_file_name)
         println("Extracting movie data...")
-        run(`unzip $download_path $(archive_dir)/movies.dat -d $temp_dir`)
-    end
-    if !isfile(ratings_file_name)
-        println("Extracting ratings data...")
-        run(`unzip $download_path $(archive_dir)/ratings.dat -d $temp_dir`)
+        InfoZIP.unzip("$(zipfile_name)", temp_dir)
     end
     original_id_to_movie = Dict{AbstractString, AbstractString}()
     movie_count = countlines(movie_file_name)
@@ -41,6 +37,7 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
     user_to_index = Dict{AbstractString, Int32}()
     ratings_count = countlines(ratings_file_name)
     progress = Progress(ratings_count, 1, "Loading ratings ")
+    println(ratings_file_name)
     open(ratings_file_name, "r") do ratings_file
         for line in eachline(ratings_file)
             user, movie, rating, timestamp = split(line, "::")
@@ -53,7 +50,7 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
             if item_index == 0
                 item_index = item_to_index[item] = length(item_to_index) + 1
             end
-            push!(ratings, Rating(user_index, item_index, float(rating)))
+            push!(ratings, Rating(user_index, item_index, parse.(Float32,rating)))
             next!(progress)
         end
     end

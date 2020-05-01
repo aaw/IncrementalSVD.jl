@@ -1,0 +1,9 @@
+name = "IncrementalSVD"
+
+uuid = "86249b74-0ae6-4176-8da6-d94a1233b432"
+
+[deps]
+ProgressMeter
+InfoZIP
+Random
+LinearAlgebra
