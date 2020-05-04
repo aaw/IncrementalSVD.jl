@@ -7,7 +7,7 @@ Collaborative filtering that can analyze millions of ratings on a laptop in a fe
 
 ### What does that mean?
 
-If you have a set of user ratings, saves, follows, etc., you can use this package to turn 
+If you have a set of user ratings, saves, follows, etc., you can use this package to turn
 those ratings into:
 * Predictions of how users might rate other items.
 * Clusters of similar items and similar users.
@@ -50,12 +50,12 @@ Since we can't force our users to watch and rate all of the movies in the series
 those columns is some sparse sample of ratings. Taken as vectors projected on just those 12 columns,
 it's pretty likely that we'd need a basis of size 12 to represent them all (this would be true, for
 example, if there are 12 users who have each only rated a single different Friday the 13th film.)
-But that's a basis for the sparse set of known ratings, not the dense set of predicted ratings. 
-What we'd actually like is a basis of smaller rank the like single-vector basis we used in 
+But that's a basis for the sparse set of known ratings, not the dense set of predicted ratings.
+What we'd actually like is a basis of smaller rank the like single-vector basis we used in
 the previous paragraph that generalizes the sparse, observed ratings.
 
 That's where the SVD comes in: we can choose a small rank and extract a matrix of exactly that rank
-from the SVD. The resulting matrix will still approximate the original matrix, so decreasing the 
+from the SVD. The resulting matrix will still approximate the original matrix, so decreasing the
 rank will just smooth out
 the ratings by forcing them to be linear combinations of only a few basis vectors while matching
 our sparsely observed ratings as closely as possible. And the best part is that you don't even need to
@@ -74,8 +74,8 @@ You can initialize the unknown entries based on some prior instead of setting
 them all to zeros, but when you compute an SVD over the entire matrix,
 you're penalizing both the differences from your known ratings and the differences from your
 predictions of unknown ratings equally, and there are typically many more unknown ratings than known
-in the ratings matrix. So you end up essentially fitting the model to your prior when you'd like to 
-fit the model only to your observed ratings instead. 
+in the ratings matrix. So you end up essentially fitting the model to your prior when you'd like to
+fit the model only to your observed ratings instead.
 
 ### So what does this package do that's different than an SVD?
 
@@ -102,7 +102,11 @@ implementing and tuning Funk's algorithm on the Netflix Prize dataset.
 ### How do I install this package?
 
 ```julia
-Pkg.clone("git://github.com/aaw/IncrementalSVD.jl.git")
+Pkg.add(PackageSpec(url="https://github.com/aaw/IncrementalSVD.jl"))
+```
+or
+```Julia
+pkg> add https://github.com/aaw/IncrementalSVD.jl
 ```
 
 ### How do I use this package build a recommendation engine?
@@ -159,10 +163,10 @@ julia> IncrementalSVD.similar_items(model, "Friday the 13th Part 2 (1981)")
  "Nightmare on Elm Street 5: The Dream Child, A (1989)"
 ```
 
-Looks like the first Friday the 13th is clustered together with some classic scary movies, 
+Looks like the first Friday the 13th is clustered together with some classic scary movies,
 while part 2 and later get clustered together with some lower-tier scary movies.
 
-The MovieLens dataset identifies movies by their title and year of release, so there's a 
+The MovieLens dataset identifies movies by their title and year of release, so there's a
 helper function that lets you search for a movie by a case-insensitive substring of the title:
 
 ```julia
@@ -269,11 +273,11 @@ julia> IncrementalSVD.show_item_feature(model, 2)
  "Grand Illusion (Grande illusion, La) (1937)"    
  "City Lights (1931)"                             
  "Yojimbo (1961)"                                 
- "400 Blows, The (Les Quatre cents coups) (1959)" 
+ "400 Blows, The (Les Quatre cents coups) (1959)"
 ```
 
-The second feature is more obviously something like "art house versus mainstream blockbuster". The model 
-also lets investigate similar users and user features just like we did with items, it's just not that 
+The second feature is more obviously something like "art house versus mainstream blockbuster". The model
+also lets investigate similar users and user features just like we did with items, it's just not that
 interesting to look at the anonymized user ids
 in these public data sets. If you wanted to, say, create a dating site and suggest partners based on
 movie/book ratings, those user-centric functions might be more interesting to explore.
@@ -321,7 +325,7 @@ julia> IncrementalSVD.user_ratings(rating_set, "3000")
  ("Grease 2 (1982)",1.0)           
 ```
 
-Among other things, this user seems to love movies about dystopian futures (Gattaca, 12 Monkeys, Brazil) and 
+Among other things, this user seems to love movies about dystopian futures (Gattaca, 12 Monkeys, Brazil) and
 dislike movies that involve dancing (Dirty Dancing, Flashdance, Grease 2). So what might that user
 think of another dystopian future movie like Blade Runner?
 
@@ -340,13 +344,13 @@ julia> IncrementalSVD.predicted_rating(model, "3000", "Footloose (1984)")
 ### How do I know that the results are any good?
 
 [Root-mean-square error][] (RMSE) is commonly used to measure predictions like these. It measures the average
-difference of a predicted rating to the actual rating over all actual ratings in some test set. 
+difference of a predicted rating to the actual rating over all actual ratings in some test set.
 All of the datasets loaded by this package hold out
-around 10% of the ratings for testing RMSE. After you've trained a model on a rating set, calling 
+around 10% of the ratings for testing RMSE. After you've trained a model on a rating set, calling
 `IncrementalSVD.rmse(rating_set, model)` will calculate the RMSE on the test ratings, none of which
 were seen by the model during training.
 
-You can also pass a specific rank (something less than the total rank of the model) to the `rmse` function to see 
+You can also pass a specific rank (something less than the total rank of the model) to the `rmse` function to see
 what the RMSE would have been on the same model had you stopped adding features a little earlier. If you called
 `model = IncrementalSVD.train(rating_set, 50)`, you could then call `IncrementalSVD.rmse(rating_set, model, rank=i)` for any
 `1 <= i <= 50` to find the best rank in that range. If you find a rank with better RMSE, you can truncate your
@@ -370,12 +374,12 @@ This package has built-in support for loading and cleaning three datasets:
   RMSE tends to keep going down as you add more features, so keep training if you have the time.
 
 * `load_book_crossing_dataset`: 1.1 million ratings from about 278,000 users over about 271,000 books. Ratings are in
-  the range 0 (lowest) to 10 (highest), but zeros mean that the user read the book but didn't rate it. This data comes 
-  from a crawl of the bookcrossing.com site and needs a lot of cleaning before you can 
+  the range 0 (lowest) to 10 (highest), but zeros mean that the user read the book but didn't rate it. This data comes
+  from a crawl of the bookcrossing.com site and needs a lot of cleaning before you can
   do anything useful with it. During loading, we throw away any rating by a user who hasn't rated at least 30 books and
   given at least 6 distinct numeric ratings and we also throw away any rating of a book that hasn't been rated at least
   30 times. In additions, we remap the ratings onto the range 1-6: everything from 0-5 becomes 1 and the rest of the
-  ratings are scaled down by 4. This leaves about 190,000 ratings in the range 1-5 by 3900 users over 3900 books. You 
+  ratings are scaled down by 4. This leaves about 190,000 ratings in the range 1-5 by 3900 users over 3900 books. You
   should be train a model with 30 features in about a minute with an RMSE a little over 1.5.
 
 [Julia]: http://www.julialang.org
