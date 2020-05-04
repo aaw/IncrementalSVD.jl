@@ -20,11 +20,7 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
     ratings_file_name = joinpath(temp_dir, archive_dir, "ratings.dat")
     if !isfile(movie_file_name)
         println("Extracting movie data...")
-        run(`unzip $download_path $(archive_dir)/movies.dat -d $temp_dir`)
-    end
-    if !isfile(ratings_file_name)
-        println("Extracting ratings data...")
-        run(`unzip $download_path $(archive_dir)/ratings.dat -d $temp_dir`)
+        InfoZIP.unzip("$(download_path)", temp_dir)
     end
     original_id_to_movie = Dict{AbstractString, AbstractString}()
     movie_count = countlines(movie_file_name)
@@ -53,7 +49,7 @@ function load_movielens_dataset(zipfile_name, archive_dir, split_ratio=0.10)
             if item_index == 0
                 item_index = item_to_index[item] = length(item_to_index) + 1
             end
-            push!(ratings, Rating(user_index, item_index, float(rating)))
+            push!(ratings, Rating(user_index, item_index, parse.(Float32,rating)))
             next!(progress)
         end
     end

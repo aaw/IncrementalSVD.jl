@@ -1,6 +1,6 @@
 module IncrementalSVD
 
-using ProgressMeter
+using ProgressMeter, InfoZIP, Random, LinearAlgebra
 
 export Rating, RatingSet, RatingsModel
 export train

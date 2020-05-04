@@ -1,21 +1,21 @@
 # A single rating. The user and item are both represented by integer ids. A map
 # between ids and user/item names is stored elsewhere, both in the rating set
 # and the model.
-type Rating
+struct Rating
     user::Int32
     item::Int32
     value::Float32
 end
 
-# An internal type used only by the train function for caching between epochs.
-type Residual
+# An internal struct used only by the train function for caching between epochs.
+mutable struct Residual
     value::Float32
     curr_error::Float32
     prev_error::Float32
 end
 
 # A set of ratings.
-type RatingSet
+struct RatingSet
     # The set of ratings that the model should be trained on.
     training_set::Array{Rating, 1}
     # The set of ratings that the model should be tested on. This is a hold-out
@@ -28,7 +28,7 @@ type RatingSet
 end
 
 # An SVD model.
-type RatingsModel
+struct RatingsModel
     # An index between human-readable user names and an interval of integer ids.
     user_to_index::Dict{AbstractString, Int32}
     # An index between human-readable item names and an interval of integer ids.
